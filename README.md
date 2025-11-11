@@ -23,7 +23,7 @@ Before using the extension, you need to configure your Gemini API key:
 5.  You can also configure the Gemini Model and add any custom instructions on this page.
 
 <p align="center">
-<img width="800" alt="Just Commit Settings" src="https://github.com/user-attachments/assets/c139227d-c652-4539-bb47-0e7715fb6073" />
+<img width="650" alt="Just Commit Settings" src="https://github.com/user-attachments/assets/f9e833ee-a221-4642-adf0-0c18920795f2" />
 </p>
 
 ## Usage
