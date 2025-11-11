@@ -22,6 +22,10 @@ Before using the extension, you need to configure your Gemini API key:
 4.  Fill in your **Gemini Api Key**. You can get one from [Google AI Studio](https://aistudio.google.com/app/api-keys).
 5.  You can also configure the Gemini Model and add any custom instructions on this page.
 
+<p align="center">
+<img width="800" alt="Just Commit Settings" src="https://github.com/user-attachments/assets/c139227d-c652-4539-bb47-0e7715fb6073" />
+</p>
+
 ## Usage
 
 1.  Make some changes in your Git repository.

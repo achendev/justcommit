@@ -58,6 +58,17 @@
                     "default": "Answer with very shortly commit message based on the changes, also use categories, Feature, Refactor, Fix, etc..., don't shorhener Feature to Feat.",
                     "description": "Custom instructions for the AI model.",
                     "editPresentation": "multilineText"
+                },
+                "justcommit.gemini.twoWaySyncEnabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable two-way sync to replace sensitive or long strings with placeholders."
+                },
+                "justcommit.gemini.twoWaySyncRules": {
+                    "type": "string",
+                    "default": "local_value|placeholder_value",
+                    "description": "Replacement rules, one per line, in the format 'local_value|placeholder_value'.",
+                    "editPresentation": "multilineText"
                 }
             }
         }

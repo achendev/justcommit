@@ -3,6 +3,8 @@ import { GitService, Repository } from './services/gitService';
 import { GeminiService } from './services/geminiService';
 import { PromptService } from './services/promptService';
 import { Logger } from './utils/logger';
+import { ConfigService } from './utils/configService';
+import { applyReplacements } from './utils/twoWaySync';
 
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
@@ -25,7 +27,15 @@ export function activate(context: vscode.ExtensionContext) {
                 }
 
                 progress.report({ increment: 20, message: "Analyzing changes..." });
-                const diff = await GitService.getDiff(repository);
+                let diff = await GitService.getDiff(repository);
+
+                if (ConfigService.isTwoWaySyncEnabled()) {
+                    const rules = ConfigService.getTwoWaySyncRules();
+                    if (rules) {
+                        progress.report({ increment: 30, message: "Applying replacements..." });
+                        diff = applyReplacements(diff, rules, 'outgoing');
+                    }
+                }
 
                 progress.report({ increment: 40, message: "Creating prompt for AI..." });
                 const prompt = PromptService.generatePrompt(diff);
@@ -38,7 +48,16 @@ export function activate(context: vscode.ExtensionContext) {
                     attempts++;
                     try {
                         progress.report({ increment: 60, message: `Generating commit message (Attempt ${attempts}/${maxAttempts})...` });
-                        const commitMessage = await GeminiService.generateCommitMessage(prompt, progress);
+                        let commitMessage = await GeminiService.generateCommitMessage(prompt, progress);
+
+                        if (ConfigService.isTwoWaySyncEnabled()) {
+                            const rules = ConfigService.getTwoWaySyncRules();
+                            if (rules) {
+                                progress.report({ increment: 90, message: "Reverting replacements..." });
+                                commitMessage.message = applyReplacements(commitMessage.message, rules, 'incoming');
+                            }
+                        }
+
                         repository.inputBox.value = commitMessage.message;
                         lastError = null; // Clear error on success
                         break; // Exit loop on success

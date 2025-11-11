@@ -16,4 +16,12 @@ export class ConfigService {
     static getCustomInstructions(): string {
         return this.getConfig().get<string>('customInstructions') || "Answer with very shortly commit message based on the changes, also use categories, Feature, Refactor, Fix, etc..., don't shorhener Feature to Feat.";
     }
+
+    static isTwoWaySyncEnabled(): boolean {
+        return this.getConfig().get<boolean>('twoWaySyncEnabled') || false;
+    }
+
+    static getTwoWaySyncRules(): string {
+        return this.getConfig().get<string>('twoWaySyncRules') || '';
+    }
 }
