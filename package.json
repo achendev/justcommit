@@ -1,0 +1,83 @@
+{
+    "name": "justcommit",
+    "displayName": "Just Commit",
+    "description": "Generate commit messages with Gemini",
+    "version": "1.0.0",
+    "publisher": "achendev",
+    "icon": "icons/icon.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/achendev/justcommit.git"
+    },
+    "license": "MIT",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:justcommit.generateCommitMessage"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "justcommit.generateCommitMessage",
+                "title": "Just Commit: Generate Commit Message",
+                "icon": {
+                    "light": "./icons/button-light.svg",
+                    "dark": "./icons/button-dark.svg"
+                }
+            }
+        ],
+        "menus": {
+            "scm/title": [
+                {
+                    "when": "scmProvider == git",
+                    "command": "justcommit.generateCommitMessage",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "configuration": {
+            "title": "Just Commit",
+            "properties": {
+                "justcommit.gemini.apiKey": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Your Google Gemini API Key."
+                },
+                "justcommit.gemini.model": {
+                    "type": "string",
+                    "default": "gemini-flash-lite-latest",
+                    "description": "The Gemini model to use."
+                },
+                "justcommit.gemini.customInstructions": {
+                    "type": "string",
+                    "default": "Answer with very shortly commit message based on the changes, also use categories, Feature, Refactor, Fix, etc..., don't shorhener Feature to Feat.",
+                    "description": "Custom instructions for the AI model.",
+                    "editPresentation": "multilineText"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "webpack --mode production",
+        "watch": "webpack --mode development --watch",
+        "build": "npx vsce package"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.80.0",
+        "@types/node": "18.x",
+        "typescript": "^5.3.3",
+        "ts-loader": "^9.5.1",
+        "webpack": "^5.89.0",
+        "webpack-cli": "^5.1.4",
+        "@vscode/vsce": "^2.22.0"
+    },
+    "dependencies": {
+        "axios": "^1.6.2"
+    }
+}

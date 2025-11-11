@@ -1,0 +1,11 @@
+# Ignore development and source files
+.vscode/
+node_modules/
+src/
+
+# Ignore configuration files
+webpack.config.js
+tsconfig.json
+
+# Ignore packaged extension file
+*.vsix
