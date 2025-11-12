@@ -55,7 +55,7 @@
                 },
                 "justcommit.gemini.customInstructions": {
                     "type": "string",
-                    "default": "Answer with very shortly commit message based on the changes, also use categories, Feature, Refactor, Fix, etc..., don't shorhener Feature to Feat.",
+                    "default": "Answer with a very short commit message based on the changes. Also use categories like Feature, Refactor, Fix, etc. Don't shorten Feature to Feat. The commit message must be a single line.",
                     "description": "Custom instructions for the AI model.",
                     "editPresentation": "multilineText"
                 },

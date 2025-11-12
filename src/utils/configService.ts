@@ -14,7 +14,7 @@ export class ConfigService {
     }
 
     static getCustomInstructions(): string {
-        return this.getConfig().get<string>('customInstructions') || "Answer with very shortly commit message based on the changes, also use categories, Feature, Refactor, Fix, etc..., don't shorhener Feature to Feat.";
+        return this.getConfig().get<string>('customInstructions') || "Answer with a very short commit message based on the changes. Also use categories like Feature, Refactor, Fix, etc. Don't shorten Feature to Feat. The commit message must be a single line.";
     }
 
     static isTwoWaySyncEnabled(): boolean {
