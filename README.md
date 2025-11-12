@@ -3,7 +3,7 @@
 A minimal VSCode extension to generate commit messages using Google's Gemini AI.
 
 <p align="center">
-<img width="450" alt="Just Commit" src="https://github.com/user-attachments/assets/85fee8a3-3925-41e9-a0ec-5560ecee0efd" />
+<img width="450" alt="Just Commit" src="https://github.com/user-attachments/assets/be197a7e-3c5c-4fd8-bd99-fcf6ee301250" />
 </p>
 
 ## Features
