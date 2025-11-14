@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { Logger } from '../utils/logger';
+import * as path from 'path';
 
 // Minimal interfaces for the VS Code Git extension API
 interface GitExtension {
@@ -48,7 +49,7 @@ interface Change {
 }
 
 export class GitService {
-    static async getActiveRepository(): Promise<Repository | undefined> {
+    static async getActiveRepository(sourceControl?: vscode.SourceControl): Promise<Repository | undefined> {
         const extension = vscode.extensions.getExtension<GitExtension>('vscode.git');
         if (!extension) {
             vscode.window.showErrorMessage('Git extension not found.');
@@ -67,6 +68,13 @@ export class GitService {
             return undefined;
         }
 
+        if (sourceControl && sourceControl.rootUri) {
+            const selectedRepo = repositories.find(repo => repo.rootUri.fsPath === sourceControl.rootUri!.fsPath);
+            if (selectedRepo) {
+                return selectedRepo;
+            }
+        }
+
         if (repositories.length === 1) {
             return repositories[0];
         }
@@ -83,7 +91,21 @@ export class GitService {
             }
         }
         
-        return repositories[0];
+        const repoOptions = repositories.map(repo => ({
+            label: path.basename(repo.rootUri.fsPath),
+            description: repo.rootUri.fsPath,
+            repository: repo
+        }));
+
+        const selected = await vscode.window.showQuickPick(repoOptions, {
+            placeHolder: 'Select a repository to generate commit message for'
+        });
+
+        if (selected) {
+            return selected.repository;
+        }
+        
+        return undefined;
     }
     
     static async getDiff(repository: Repository): Promise<string> {

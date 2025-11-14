@@ -11,7 +11,7 @@ const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 export function activate(context: vscode.ExtensionContext) {
     Logger.log('Just Commit extension is now active.');
 
-    let disposable = vscode.commands.registerCommand('justcommit.generateCommitMessage', async () => {
+    let disposable = vscode.commands.registerCommand('justcommit.generateCommitMessage', async (sourceControl?: vscode.SourceControl) => {
         
         await vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
         }, async (progress) => {
             try {
                 progress.report({ increment: 10, message: "Finding repository..." });
-                const repository: Repository | undefined = await GitService.getActiveRepository();
+                const repository: Repository | undefined = await GitService.getActiveRepository(sourceControl);
                 if (!repository) {
                     vscode.window.showErrorMessage('No active Git repository found.');
                     return;

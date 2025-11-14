@@ -2,7 +2,7 @@
     "name": "justcommit",
     "displayName": "Just Commit",
     "description": "Generate commit messages with Gemini",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "publisher": "achendev",
     "icon": "icons/icon.png",
     "repository": {
@@ -36,7 +36,10 @@
                 {
                     "when": "scmProvider == git",
                     "command": "justcommit.generateCommitMessage",
-                    "group": "navigation"
+                    "group": "navigation",
+                    "arguments": [
+                        "$scmProvider"
+                    ]
                 }
             ]
         },
