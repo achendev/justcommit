@@ -24,4 +24,16 @@ export class ConfigService {
     static getTwoWaySyncRules(): string {
         return this.getConfig().get<string>('twoWaySyncRules') || '';
     }
+
+    static shouldMaskIPs(): boolean {
+        return this.getConfig().get<boolean>('autoMaskIPs') || false;
+    }
+
+    static shouldMaskEmails(): boolean {
+        return this.getConfig().get<boolean>('autoMaskEmails') || false;
+    }
+
+    static shouldMaskFQDNs(): boolean {
+        return this.getConfig().get<boolean>('autoMaskFQDNs') || false;
+    }
 }

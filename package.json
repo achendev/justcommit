@@ -2,7 +2,7 @@
     "name": "justcommit",
     "displayName": "Just Commit",
     "description": "Generate commit messages with Gemini",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "publisher": "achendev",
     "icon": "icons/icon.png",
     "repository": {
@@ -65,13 +65,28 @@
                 "justcommit.gemini.twoWaySyncEnabled": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Enable two-way sync to replace sensitive or long strings with placeholders."
+                    "description": "Enable Custom Two-Way Replacements (Simple string matching)."
                 },
                 "justcommit.gemini.twoWaySyncRules": {
                     "type": "string",
                     "default": "local_value|placeholder_value",
-                    "description": "Replacement rules, one per line, in the format 'local_value|placeholder_value'.",
+                    "description": "Custom replacement rules, one per line, in the format 'local_value|placeholder_value'.",
                     "editPresentation": "multilineText"
+                },
+                "justcommit.gemini.autoMaskIPs": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Auto-Mask IP Addresses (IPv4 & IPv6) before sending changes to AI."
+                },
+                "justcommit.gemini.autoMaskEmails": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Auto-Mask Email Addresses before sending changes to AI."
+                },
+                "justcommit.gemini.autoMaskFQDNs": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Auto-Mask Domains (FQDNs) before sending changes to AI."
                 }
             }
         }

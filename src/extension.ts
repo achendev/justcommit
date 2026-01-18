@@ -5,11 +5,18 @@ import { PromptService } from './services/promptService';
 import { Logger } from './utils/logger';
 import { ConfigService } from './utils/configService';
 import { applyReplacements } from './utils/twoWaySync';
+import { StorageService } from './services/storageService';
+import { maskIPs, unmaskIPs } from './utils/masking/ipMasking';
+import { maskEmails, unmaskEmails } from './utils/masking/emailMasking';
+import { maskFQDNs, unmaskFQDNs } from './utils/masking/fqdnMasking';
 
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 export function activate(context: vscode.ExtensionContext) {
     Logger.log('Just Commit extension is now active.');
+    
+    // Initialize storage service to allow persistence for masking maps
+    StorageService.initialize(context);
 
     let disposable = vscode.commands.registerCommand('justcommit.generateCommitMessage', async (sourceControl?: vscode.SourceControl) => {
         
@@ -29,12 +36,26 @@ export function activate(context: vscode.ExtensionContext) {
                 progress.report({ increment: 20, message: "Analyzing changes..." });
                 let diff = await GitService.getDiff(repository);
 
+                // --- OUTGOING PROCESSING ---
+                progress.report({ increment: 30, message: "Processing changes..." });
+
+                // 1. Manual Rules (Existing logic)
                 if (ConfigService.isTwoWaySyncEnabled()) {
                     const rules = ConfigService.getTwoWaySyncRules();
                     if (rules) {
-                        progress.report({ increment: 30, message: "Applying replacements..." });
                         diff = applyReplacements(diff, rules, 'outgoing');
                     }
+                }
+
+                // 2. Auto-Masking (New Robust Logic)
+                if (ConfigService.shouldMaskIPs()) {
+                    diff = await maskIPs(diff);
+                }
+                if (ConfigService.shouldMaskEmails()) {
+                    diff = await maskEmails(diff);
+                }
+                if (ConfigService.shouldMaskFQDNs()) {
+                    diff = await maskFQDNs(diff);
                 }
 
                 progress.report({ increment: 40, message: "Creating prompt for AI..." });
@@ -50,10 +71,24 @@ export function activate(context: vscode.ExtensionContext) {
                         progress.report({ increment: 60, message: `Generating commit message (Attempt ${attempts}/${maxAttempts})...` });
                         let commitMessage = await GeminiService.generateCommitMessage(prompt, progress);
 
+                        // --- INCOMING PROCESSING ---
+                        progress.report({ increment: 90, message: "Unmasking response..." });
+
+                        // 1. Auto-Unmasking (New Robust Logic) - Reverse order of application
+                        if (ConfigService.shouldMaskFQDNs()) {
+                            commitMessage.message = await unmaskFQDNs(commitMessage.message);
+                        }
+                        if (ConfigService.shouldMaskEmails()) {
+                            commitMessage.message = await unmaskEmails(commitMessage.message);
+                        }
+                        if (ConfigService.shouldMaskIPs()) {
+                            commitMessage.message = await unmaskIPs(commitMessage.message);
+                        }
+
+                        // 2. Manual Rules Unmasking
                         if (ConfigService.isTwoWaySyncEnabled()) {
                             const rules = ConfigService.getTwoWaySyncRules();
                             if (rules) {
-                                progress.report({ increment: 90, message: "Reverting replacements..." });
                                 commitMessage.message = applyReplacements(commitMessage.message, rules, 'incoming');
                             }
                         }
